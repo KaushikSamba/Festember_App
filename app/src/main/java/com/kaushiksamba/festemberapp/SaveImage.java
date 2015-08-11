@@ -60,6 +60,7 @@ public class SaveImage
             String status = Environment.getExternalStorageState();
             return status.equals(Environment.MEDIA_MOUNTED);
         }
+
         public static String getSDCardPath() {
             File path = Environment.getExternalStorageDirectory();
             return path.getAbsolutePath();

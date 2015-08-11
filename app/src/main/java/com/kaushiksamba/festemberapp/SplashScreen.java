@@ -14,7 +14,7 @@ public class SplashScreen extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         Utilities.init();
-        Utilities.prefs = getSharedPreferences("check_status", 0);
+        Utilities.prefs = getSharedPreferences("check_" + "status", 0);
         Utilities.status = Utilities.prefs.getInt("status", 0);
         if(Utilities.status!=0)
         {

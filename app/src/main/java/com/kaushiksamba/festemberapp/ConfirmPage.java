@@ -41,14 +41,12 @@ public class ConfirmPage extends ActionBarActivity {
         handleButtonClick();
     }
 
-    private void setTextOnScreen()
-    {
+    private void setTextOnScreen() {
         TextView rollNumber = (TextView) findViewById(R.id.rollNumber);
         rollNumber.setText(Utilities.username);
         TextView coupon = (TextView) findViewById(R.id.coupon);
         coupon.setText(Integer.toString(Utilities.amount));
-        if(Utilities.amount==700)
-        {
+        if (Utilities.amount == 700) {
             LinearLayout genderLayout = (LinearLayout) findViewById(R.id.genderLayout);
             genderLayout.setVisibility(View.VISIBLE);
             LinearLayout sizeLayout = (LinearLayout) findViewById(R.id.sizeLayout);
@@ -60,45 +58,41 @@ public class ConfirmPage extends ActionBarActivity {
         }
     }
 
-    private void handleButtonClick()
-    {
+    private void handleButtonClick() {
         Button button = (Button) findViewById(R.id.confirm);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Send the data to the server
-
-                Utilities.status=2;
-                //Calling welcome screen for the app
-                Intent intent = new Intent(getBaseContext(),WelcomePage.class);
-                startActivity(intent);
+                new myAsyncTask().execute();
             }
         });
     }
-/*
-    class myAsyncTask extends AsyncTask<String, Void, Void> {
+
+    class myAsyncTask extends AsyncTask<String, Void, String> {
         @Override
-        protected Void doInBackground(String... strings) {
+        protected String doInBackground(String... strings) {
             HttpClient httpclient = new DefaultHttpClient();
             HttpEntity httpEntity = null;
             HttpPost httppost = new HttpPost(Utilities.url_reg);
             JSONObject jsonObject;
+            String error = null;
             try {
                 List nameValuePairs = new ArrayList();
                 nameValuePairs.add(new BasicNameValuePair("user_name", Utilities.username));
                 nameValuePairs.add(new BasicNameValuePair("user_pass", Utilities.password));
                 nameValuePairs.add(new BasicNameValuePair("user_amount", Integer.toString(Utilities.amount)));
-                nameValuePairs.add(new BasicNameValuePair("user_gender", Utilities.shirtSize));
+                nameValuePairs.add(new BasicNameValuePair("user_gender", Utilities.gender));
                 nameValuePairs.add(new BasicNameValuePair("user_tshirt_size", Utilities.shirtSize));
 
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
                 HttpResponse response = httpclient.execute(httppost);
                 httpEntity = response.getEntity();
                 String s = EntityUtils.toString(httpEntity);
                 try {
                     jsonObject = new JSONObject(s);
-                    Utilities.status = jsonObject.getInt("auth")+1;
-                    String error =  jsonObject.getString("error");
+                    Utilities.status = jsonObject.getInt("auth") + 1;
+                    error = jsonObject.getString("error");
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -108,29 +102,28 @@ public class ConfirmPage extends ActionBarActivity {
             } catch (ClientProtocolException e) {
             } catch (IOException e) {
             }
-            return null;
+            return error;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            switch (auth){
+        protected void onPostExecute(String error) {
+            super.onPostExecute(error);
+            switch (Utilities.status) {
                 case 0:
-                    Toast.makeText(Form_Screen.this, error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ConfirmPage.this, error, Toast.LENGTH_SHORT).show();
                     //userText.setText("Username");
                     //passText.setText("Password");
                     break;
                 case 1:
-
-                    Intent i = new Intent(Form_Screen.this,Display_Screen.class);
+                case 2:
+                    Intent i = new Intent(ConfirmPage.this, WelcomePage.class);
+                    SharedPreferences prefs = Utilities.prefs;
                     SharedPreferences.Editor editor = prefs.edit();
-                    editor.putInt("status", auth);
+                    editor.putInt("status", Utilities.status);
                     editor.apply();
                     startActivity(i);
                     break;
-                case 2: Intent i2 = new Intent(Form_Screen.this,Display_Screen.class);
-                    startActivity(i2);
-                    break;
             }
-*/
+        }
+    }
 }

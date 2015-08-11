@@ -3,6 +3,7 @@ package com.kaushiksamba.festemberapp;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -51,13 +52,15 @@ public class WelcomePage extends ActionBarActivity {
                 startActivity(intent);
             }
         });
-        if(Utilities.status==2)
-        {
+        if (Utilities.status == 2) {
             couponButton.setVisibility(View.INVISIBLE);
             ImageView qrCodeImage = (ImageView) findViewById(R.id.qr_code_image);
             qrCodeImage.setVisibility(View.VISIBLE);
             //qrCodeImage.setImageResource(R.drawable.festember_logo);
-            new myAsyncTask().execute();
+            Bitmap bitmap = new SaveImage(Utilities.username, null).loadFromCacheFile();
+            if (bitmap == null) new myAsyncTask().execute();
+            else
+                qrCodeImage.setImageBitmap(bitmap);
         }
     }
 
@@ -65,22 +68,23 @@ public class WelcomePage extends ActionBarActivity {
         @Override
         protected Bitmap doInBackground(String... strings) {
             HttpClient httpclient = new DefaultHttpClient();
-            Bitmap image=null;
+            Bitmap image = null;
             HttpPost httppost = new HttpPost(Utilities.url_qr);
             try {
                 List nameValuePairs = new ArrayList();
-                nameValuePairs.add(new BasicNameValuePair("user_name", "106113097"));
-                nameValuePairs.add(new BasicNameValuePair("user_pass", "97"));
-                Log.d("TAG", Utilities.username + " " + Utilities.password );
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
+                nameValuePairs.add(new BasicNameValuePair("user_name", Utilities.username));
+                nameValuePairs.add(new BasicNameValuePair("user_pass", Utilities.password));
+                Log.d("TAG", Utilities.username + " " + Utilities.password);
+
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
                 URL url2 = new URL(Utilities.url_qr);
 
                 HttpResponse response = httpclient.execute(httppost);
-                HttpEntity httpEntity=null;
+                HttpEntity httpEntity = null;
 
                 httpEntity = response.getEntity();
-                byte[] img=EntityUtils.toByteArray(httpEntity);
-                image =   BitmapFactory.decodeByteArray(img, 0,img.length );
+                byte[] img = EntityUtils.toByteArray(httpEntity);
+                image = BitmapFactory.decodeByteArray(img, 0, img.length);
 
                 //HttpURLConnection connection  = (HttpURLConnection) url2.openConnection();
 
@@ -96,13 +100,13 @@ public class WelcomePage extends ActionBarActivity {
         }
 
         @Override
-        protected void onPostExecute(Bitmap bmp)
-        {
+        protected void onPostExecute(Bitmap bmp) {
             super.onPostExecute(bmp);
             ImageView show_image = (ImageView) findViewById(R.id.qr_code_image);
             show_image.setImageBitmap(bmp);
-            SaveImage save =  new SaveImage(Utilities.username,bmp);
+            SaveImage save = new SaveImage(Utilities.username, bmp);
             save.saveToCacheFile(bmp);
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse(save.getCacheFilename())));
             Toast.makeText(WelcomePage.this, "Image Saved", Toast.LENGTH_SHORT).show();
         }
     }

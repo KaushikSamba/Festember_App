@@ -53,7 +53,10 @@
         android:text="Sign in"
         android:textSize="35sp"
         android:textColor="#FFFFFF"
+        android:background="@drawable/button_style"
+        />
+<!--
         android:background="#ffff4400"
         />
-
+-->
 </LinearLayout>

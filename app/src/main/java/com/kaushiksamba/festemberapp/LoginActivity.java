@@ -3,6 +3,7 @@ package com.kaushiksamba.festemberapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ public class LoginActivity extends ActionBarActivity {
     String rollNumber;
     String password;
     EditText rollNumberText, passwordText;
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -49,7 +51,7 @@ public class LoginActivity extends ActionBarActivity {
     {
         rollNumberText = (EditText) findViewById(R.id.rollNumber);
         passwordText = (EditText) findViewById(R.id.password);
-        Button button = (Button) findViewById(R.id.signInButton);
+        button = (Button) findViewById(R.id.signInButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -63,6 +65,7 @@ public class LoginActivity extends ActionBarActivity {
                     password = passwordText.getText().toString();
                     //Pass rollNumber and password to the server
                     new myAsyncTask().execute();
+                    button.setClickable(false);
                 }
             }
         });
@@ -106,12 +109,14 @@ public class LoginActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(String error) {
             super.onPostExecute(error);
+            System.out.println("Error: " + error);
             switch (Utilities.status)
             {
                 case 0:
-                    Toast.makeText(LoginActivity.this,error,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this,"There was a problem connecting to the server. Please check your username and password and try again.",Toast.LENGTH_SHORT).show();
                     rollNumberText.setText("");
                     passwordText.setText("");
+                    button.setClickable(true);
                     break;
                 case 1:case 2:
                     Intent i = new Intent(LoginActivity.this,WelcomePage.class);
@@ -123,9 +128,15 @@ public class LoginActivity extends ActionBarActivity {
                     Utilities.password = password;
                     editor.apply();
                     startActivity(i);
+                    finish();
+                    break;
+                case 3:
+                    Toast.makeText(LoginActivity.this,"Your account is not on the system. Please contact Festember OC",Toast.LENGTH_SHORT).show();
+                    rollNumberText.setText("");
+                    passwordText.setText("");
+                    button.setClickable(true);
                     break;
             }
-            finish();
         }
     }
 }
