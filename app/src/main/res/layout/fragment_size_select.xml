@@ -20,7 +20,7 @@
             android:text="S"
             android:layout_weight="1"
             android:id="@+id/SizeS"
-            android:background="#ffff4400"
+            android:background="@drawable/button_style"
             android:textColor="#FFFFFF"
             />
         <Button
@@ -30,7 +30,7 @@
             android:text="M"
             android:layout_weight="1"
             android:id="@+id/SizeM"
-            android:background="#ffff4400"
+            android:background="@drawable/button_style"
             android:textColor="#FFFFFF"
             />
         <Button
@@ -40,7 +40,7 @@
             android:text="L"
             android:layout_weight="1"
             android:id="@+id/SizeL"
-            android:background="#ffff4400"
+            android:background="@drawable/button_style"
             android:textColor="#FFFFFF"
             />
     </LinearLayout>
@@ -58,7 +58,7 @@
             android:layout_margin="5dp"
             android:text="XL"
             android:layout_weight="1"
-            android:background="#ffff4400"
+            android:background="@drawable/button_style"
             android:textColor="#FFFFFF"
             android:id="@+id/SizeXL"
             />
@@ -67,7 +67,7 @@
             android:layout_height="fill_parent"
             android:layout_margin="5dp"
             android:text="XXL"
-            android:background="#ffff4400"
+            android:background="@drawable/button_style"
             android:textColor="#FFFFFF"
             android:layout_weight="1"
             android:id="@+id/SizeXXL"

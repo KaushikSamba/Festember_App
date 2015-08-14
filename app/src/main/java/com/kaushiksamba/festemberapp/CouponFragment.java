@@ -11,23 +11,23 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
-public class CouponFragment extends Fragment
-{
+public class CouponFragment extends Fragment {
     OnClickListener listener;
     View view;
+
     public CouponFragment() {
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if(activity instanceof CouponFragment.OnClickListener)
+        if (activity instanceof CouponFragment.OnClickListener)
             listener = (OnClickListener) activity;
     }
 
-    public interface OnClickListener
-    {
+    public interface OnClickListener {
         public void CouponToGender();
+        public void OpenConfirmPage();
     }
 
     @Override
@@ -38,26 +38,23 @@ public class CouponFragment extends Fragment
         return view;
     }
 
-    private void handleButtonClicks()
-    {
+    private void handleButtonClicks() {
         Button button500 = (Button) view.findViewById(R.id.Rs500);
         Button button700 = (Button) view.findViewById(R.id.Rs700);
         button500.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 //Call confirmation screen
-                Utilities.amount=500;
-                Intent intent = new Intent(getActivity().getBaseContext(),ConfirmPage.class);
-                startActivity(intent);
+                Utilities.amount = 500;
+                Utilities.gender = Utilities.shirtSize = null;
+                listener.OpenConfirmPage();
             }
         });
         button700.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 //Call detail selection fragment
-                Utilities.amount=700;
+                Utilities.amount = 700;
                 listener.CouponToGender();
             }
         });

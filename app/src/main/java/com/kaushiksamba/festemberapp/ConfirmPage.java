@@ -116,12 +116,13 @@ public class ConfirmPage extends ActionBarActivity {
                     break;
                 case 1:
                 case 2:
-                    Intent i = new Intent(ConfirmPage.this, WelcomePage.class);
+                    //Intent i = new Intent(ConfirmPage.this, WelcomePage.class);
                     SharedPreferences prefs = Utilities.prefs;
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putInt("status", Utilities.status);
                     editor.apply();
-                    startActivity(i);
+                    //startActivity(i);
+                    finish();
                     break;
             }
         }

@@ -1,5 +1,6 @@
 package com.kaushiksamba.festemberapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,11 +8,19 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -32,36 +41,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class LoginActivity extends ActionBarActivity {
-
+public class LoginActivity extends Activity {
     String rollNumber;
     String password;
     EditText rollNumberText, passwordText;
     Button button;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.login_screen);
         handleButtonClick();
     }
 
-    private void handleButtonClick()
-    {
+    private void handleButtonClick() {
         rollNumberText = (EditText) findViewById(R.id.rollNumber);
         passwordText = (EditText) findViewById(R.id.password);
         button = (Button) findViewById(R.id.signInButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 rollNumber = rollNumberText.getText().toString();
-                if(rollNumber.length()!=9)
+                if (rollNumber.length() != 9)
                     //Toast.makeText(getBaseContext(),"Invalid roll number",Toast.LENGTH_SHORT).show();
                     rollNumberText.setError("Invalid roll number");
-                else
-                {
+                else {
                     password = passwordText.getText().toString();
                     //Pass rollNumber and password to the server
                     new myAsyncTask().execute();
@@ -69,13 +75,27 @@ public class LoginActivity extends ActionBarActivity {
                 }
             }
         });
+        CheckBox checkBox = (CheckBox) findViewById(R.id.showPasswordCheckBox);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    //passwordText.setInputType(InputType.TYPE_CLASS_TEXT);
+                    passwordText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                }
+                if (!isChecked) {
+                    //passwordText.setInputType(InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+                    passwordText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }
+                //passwordText.setSelection(passwordText.getText().length());
+            }
+        });
     }
 
     class myAsyncTask extends AsyncTask<String, Void, String> {
         @Override
-        protected String doInBackground(String... strings)
-        {
-            String error=null;
+        protected String doInBackground(String... strings) {
+            String error = null;
             HttpClient httpclient = new DefaultHttpClient();
             HttpEntity httpEntity = null;
             HttpPost httppost = new HttpPost(Utilities.url_auth);
@@ -85,16 +105,16 @@ public class LoginActivity extends ActionBarActivity {
                 List nameValuePairs = new ArrayList();
                 nameValuePairs.add(new BasicNameValuePair("user_name", rollNumber));
                 nameValuePairs.add(new BasicNameValuePair("user_pass", password));
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
                 HttpResponse response = httpclient.execute(httppost);
                 httpEntity = response.getEntity();
                 String s = EntityUtils.toString(httpEntity);
-                Log.e("TAG1",s);
+                Log.e("TAG1", s);
                 try {
                     jsonObject = new JSONObject(s);
-                    Log.e("TAG2",s);
+                    Log.e("TAG2", s);
                     Utilities.status = jsonObject.getInt("auth");
-                    error =  jsonObject.getString("error");
+                    error = jsonObject.getString("error");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -110,28 +130,28 @@ public class LoginActivity extends ActionBarActivity {
         protected void onPostExecute(String error) {
             super.onPostExecute(error);
             System.out.println("Error: " + error);
-            switch (Utilities.status)
-            {
+            switch (Utilities.status) {
                 case 0:
-                    Toast.makeText(LoginActivity.this,"There was a problem connecting to the server. Please check your username and password and try again.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "There was a problem connecting to the server. Please check your username and password and try again.", Toast.LENGTH_SHORT).show();
                     rollNumberText.setText("");
                     passwordText.setText("");
                     button.setClickable(true);
                     break;
-                case 1:case 2:
-                    Intent i = new Intent(LoginActivity.this,WelcomePage.class);
+                case 1:
+                case 2:
+                    Intent i = new Intent(LoginActivity.this, WelcomePage.class);
                     SharedPreferences.Editor editor = Utilities.prefs.edit();
-                    editor.putInt("status",Utilities.status);
+                    editor.putInt("status", Utilities.status);
                     editor.putString("user_name", rollNumber);
-                    Utilities.username=rollNumber;
-                    editor.putString("user_pass",password);
+                    Utilities.username = rollNumber;
+                    editor.putString("user_pass", password);
                     Utilities.password = password;
                     editor.apply();
                     startActivity(i);
                     finish();
                     break;
                 case 3:
-                    Toast.makeText(LoginActivity.this,"Your account is not on the system. Please contact Festember OC",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Your account is not on the system. Please contact Festember OC", Toast.LENGTH_SHORT).show();
                     rollNumberText.setText("");
                     passwordText.setText("");
                     button.setClickable(true);

@@ -44,11 +44,7 @@ public class Coupon extends Activity implements CouponFragment.OnClickListener,G
     {
         Intent intent = new Intent(getBaseContext(),ConfirmPage.class);
         startActivity(intent);
+        finish();
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-    }
 }

@@ -21,7 +21,7 @@
         android:layout_below="@+id/welcomeText"
         android:id="@+id/couponSelect"
         android:layout_margin="20dp"
-        android:background="#ffff4400"
+        android:background="@drawable/button_style"
         android:text="Coupon"
         android:textColor="#FFFFFF"
         android:textSize="35sp"
@@ -35,12 +35,6 @@
         android:id="@+id/qr_code_image"
         android:layout_margin="20dp"
         android:layout_centerHorizontal="true"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Thanks for "
         />
 
 </RelativeLayout>

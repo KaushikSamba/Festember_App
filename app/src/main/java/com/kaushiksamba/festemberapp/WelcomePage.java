@@ -1,6 +1,7 @@
 package com.kaushiksamba.festemberapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -62,6 +63,29 @@ public class WelcomePage extends ActionBarActivity {
             else
                 qrCodeImage.setImageBitmap(bitmap);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_welcome_page, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_logout) {
+            //Logout
+            SharedPreferences.Editor editor = Utilities.prefs.edit();
+            editor.putInt("status", 0);
+            editor.putString("user_name", null);
+            editor.putString("user_pass", null);
+            editor.apply();
+            Intent intent = new Intent(WelcomePage.this, SplashScreen.class);
+            startActivity(intent);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     class myAsyncTask extends AsyncTask<String, Void, Bitmap> {
