@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
@@ -40,7 +41,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class LoginActivity extends Activity {
     String rollNumber;
     String password;
@@ -53,9 +53,14 @@ public class LoginActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.login_screen);
+        alignImageView();
         handleButtonClick();
     }
 
+    private void alignImageView()
+    {
+        ImageView imageView = (ImageView) findViewById(R.id.festemberLogo);
+    }
     private void handleButtonClick() {
         rollNumberText = (EditText) findViewById(R.id.rollNumber);
         passwordText = (EditText) findViewById(R.id.password);

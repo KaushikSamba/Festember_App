@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name = "festember_orange">#aaff4400</color>
+    <color name = "festember_orange">#c7ff6600</color>
     <color name = "festember_orange_deep">#ffff4400</color>
     <color name="Transparent80">#80000000</color>
 </resources>
